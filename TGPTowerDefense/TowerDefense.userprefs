@@ -1,0 +1,22 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="c:\Users\at-st_000\Documents\TowerDefense\TowerDefense\AppMain.cs">
+    <Files>
+      <File FileName="c:\Users\at-st_000\Documents\TowerDefense\TowerDefense\AppMain.cs" Line="145" Column="10" />
+      <File FileName="TowerDefense\Waypoint.cs" Line="11" Column="51" />
+      <File FileName="TowerDefense\Space.cs" Line="31" Column="26" />
+      <File FileName="TowerDefense\Turret.cs" Line="34" Column="4" />
+      <File FileName="TowerDefense\Enemy.cs" Line="23" Column="47" />
+      <File FileName="TowerDefense\Bullet.cs" Line="20" Column="3" />
+      <File FileName="TowerDefense\levels\level1.txt" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches>
+    <Watch file="c:\Users\at-st_000\Documents\TowerDefense\TowerDefense\AppMain.cs" line="164" offsetX="997" offsetY="2771" expression="mapData" liveUpdate="False" />
+    <Watch file="c:\Users\at-st_000\Documents\TowerDefense\TowerDefense\AppMain.cs" line="164" offsetX="997" offsetY="2771" expression="mapData" liveUpdate="False" />
+    <Watch file="c:\Users\at-st_000\Documents\TowerDefense\TowerDefense\AppMain.cs" line="164" offsetX="997" offsetY="2771" expression="mapData" liveUpdate="False" />
+  </MonoDevelop.Ide.DebuggingService.PinnedWatches>
+</Properties>
