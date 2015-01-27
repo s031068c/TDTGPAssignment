@@ -23,14 +23,19 @@ namespace TowerDefense
 		private int						spentGold;
 		
 		
-		public Turret ()
+		public Turret (Scene scene, Vector2 pos)
 		{
 			spriteTex = new TextureInfo("Application/graphics/FOE.png");
 			sprite = new SpriteUV(spriteTex);
 			stats = new turretStats();
+			sprite.Position = pos;
+			sprite.Quad.S 	= spriteTex.TextureSizef;
+
+			scene.AddChild(sprite);
 		}
 		
-		public void Update()
+		
+		public void Update(float t)
 		{
 			
 		}

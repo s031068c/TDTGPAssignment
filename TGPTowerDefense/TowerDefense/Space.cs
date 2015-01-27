@@ -41,6 +41,14 @@ namespace TowerDefense
 
 		}
 		
+		public void Update(float t)
+		{
+			if(tr != null)
+			{
+				tr.Update(t);
+			}
+		}
+		
 		public bool isFull()
 		{
 			return true;
