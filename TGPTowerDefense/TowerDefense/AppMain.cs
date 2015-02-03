@@ -31,11 +31,13 @@ namespace TowerDefense
 		private static TextureInfo										bgTex;
 		private static SpriteUV											bgSprite;
 		
+		private static Enemy											en;
+		
 		private static bool												quitGame;
 		private static int												screenH, screenW;
 		private static int[]											mapData;
 		private static List<Space>										grid;
-		
+		private static Random											rand;
 		
 		public static void Main (string[] args)
 		{
@@ -81,24 +83,38 @@ namespace TowerDefense
 //			bgTex = new TextureInfo("Application/graphics/TESTBG.png");
 //			bgSprite = new SpriteUV(bgTex);
 //			bgSprite.Quad.S = bgTex.TextureSizef;
-//			bgSprite.Position = new Vector2(0,0);
+//			bgSprite.Position = new Vector2(10,0);
 //			gameScene.AddChild(bgSprite);
 			
-			
+			Vector2 ePos = new Vector2(0.0f, 0.0f);
 			grid = new List<Space>();
 			int typeCount = 0;
-			for(int i = 17; i > 1; i--)
+			bool enemySpawn = false;
+			
+			
+			
+			
+			for(int i = 17; i > 0; i--)
 			{
-				Vector2 pos = new Vector2(0,0);
+				Vector2 pos = new Vector2(10,0);
 				for(int j = 0; j < 27; j++)
 				{
 					pos = new Vector2(j*32, i*32);
 					Space temp = new Space(gameScene, pos, mapData[typeCount]);
+					if(mapData[typeCount] == 19 && enemySpawn == false)
+					{
+						enemySpawn = true;
+						ePos = new Vector2(pos.X + 32.0f, pos.Y - 50.0f);
+					}
 					typeCount++;
 					grid.Add(temp);
 				}
 			}
 			
+			
+			rand = new Random();
+			
+			en = new Enemy(gameScene, ePos, 2, rand);
 
 			uiScene.RootWidget.AddChildLast(panel);
 			
@@ -115,7 +131,9 @@ namespace TowerDefense
 			int touchX = -100;
 			int touchY = -100;
 
-				
+			en.Update(0);
+			
+			
 			if(touchT.Length > 0 && touchT[0].Status == TouchStatus.Up)
 			{
 				touchX = (int)((touchT[0].X + 0.5f) * screenW);
@@ -128,7 +146,7 @@ namespace TowerDefense
 					int sX = s.getX ();
 					int sY = s.getY ();
 					int sT = s.getType();
-					if(sT == 0)
+					if(sT == 10)
 					{
 						if(touchX <= (sW + sX) && touchX >= sX && touchY <= (sH + sY) && touchY >= sY)
 						{
@@ -136,7 +154,7 @@ namespace TowerDefense
 							Vector2 pos = new Vector2(sX, sY);
 							foreach(Space h in grid)
 							{
-								if(h.getType() == 0)
+								if(h.getType() == 10)
 								{
 									if(h.getX() != pos.X || h.getY() != pos.Y)
 									{
@@ -147,7 +165,30 @@ namespace TowerDefense
 						}
 					}
 				}
-			}	
+			}
+			
+			foreach(Space h in grid)
+			{
+				if(h.getWayDir() != -1)
+				{
+					int wayW = h.getWWidth();
+					int wayH = h.getWHeight();
+					int wayX = h.getWX ();
+					int wayY = h.getWY ();
+					
+					float enX = en.getPos().X;
+					float enY = en.getPos().Y;
+					int enH = en.getHeight();
+					int enW = en.getWidth();
+					if(enX <= (wayW + wayX) && (enX + enW) >= wayX && enY <= (wayH + wayY) && (enY + enH) >= wayY)
+					{
+						en.setDirection(h.getWayDir());
+						en.randDelay(rand);
+					}
+				}
+				
+			}
+			
 		}
 		
 		
@@ -155,24 +196,43 @@ namespace TowerDefense
 		
 		public static void load(int lv)
 		{
+			
+			
+			/*Map editing key
+			 * 10 = Empty space for turrets
+			 * 11 = Vertical Wall |
+			 * 12 = Horizontal wall _
+			 * 13 = r corner
+			 * 14 = L corner
+			 * 15 = inverse R corner -|
+			 * 16 = inverse L corner _|
+			 * 19 = Standard ground tile for enemies
+			 * (20-23 all include 19's graphic)
+			 * 20 = Move left waypoint
+			 * 21 = Move right waypoint
+			 * 22 = move down waypoint
+			 * 23 = move up waypoint
+			 */
+			
+			
 			mapData = new int[459] 
-			{0,0,0,0,0,0,0,0,0,1, 9, 9, 9, 1, 0,0,0,0,0,0,0,0,0,0,0,0,0,
-			0,0,0,0,0,0,0,0,0,1, 9, 9, 9, 1, 0,0,0,0,0,0,0,0,0,0,0,0,0,
-			0,0,0,0,0,0,0,0,0,1, 9, 9, 9, 1, 0,0,0,0,0,0,0,0,0,0,0,0,0,
-			0,0,0,0,0,0,0,0,0,1, 9, 9, 9, 1, 0,0,0,0,0,0,0,0,0,0,0,0,0,
-			0,0,0,0,0,0,0,0,0,1, 9, 9, 9, 1, 0,0,0,0,0,0,0,0,0,0,0,0,0,
-			0,0,0,0,0,0,0,0,0,1, 9, 9, 9, 1, 0,0,0,0,0,0,0,0,0,0,0,0,0,
-			0,0,0,0,0,0,0,0,0,1, 9, 9, 9, 1, 0,0,0,0,0,0,0,0,0,0,0,0,0,
-			0,0,0,0,0,0,0,0,0,1, 9, 9, 9, 1, 0,0,0,0,0,0,0,0,0,0,0,0,0,
-			0,0,0,0,0,0,0,0,0,1, 9, 9, 9, 1, 0,0,0,0,0,0,0,0,0,0,0,0,0,
-			0,0,0,0,0,0,0,0,0,1, 9, 9, 9, 1, 0,0,0,0,0,0,0,0,0,0,0,0,0,
-			0,0,0,0,0,0,0,0,0,1, 9, 9, 9, 1, 0,0,0,0,0,0,0,0,0,0,0,0,0,
-			0,0,0,0,0,0,0,0,0,1, 9, 9, 9, 1, 0,0,0,0,0,0,0,0,0,0,0,0,0,
-			0,0,0,0,0,0,0,0,0,1, 9, 9, 9, 1, 0,0,0,0,0,0,0,0,0,0,0,0,0,
-			0,0,0,0,0,0,0,0,0,1, 9, 9, 9, 1, 0,0,0,0,0,0,0,0,0,0,0,0,0,
-			0,0,0,0,0,0,0,0,0,1, 9, 9, 9, 1, 0,0,0,0,0,0,0,0,0,0,0,0,0,
-			0,0,0,0,0,0,0,0,0,1, 9, 9, 9, 1, 0,0,0,0,0,0,0,0,0,0,0,0,0,
-			0,0,0,0,0,0,0,0,0,1, 9, 9, 9, 1, 0,0,0,0,0,0,0,0,0,0,0,0,0};
+			{10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,19,19,19,11,10,10,10,
+			 10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,19,19,19,11,10,10,10,
+			 10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,19,19,19,11,10,10,10,
+			 10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,19,19,19,11,10,10,10,
+			 10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,19,19,19,11,10,10,10,
+			 10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,19,19,19,11,10,10,10,
+			 10,10,10,10,10,10,10,10,10,13,12,12,12,12,12,12,12,12,12,16,20,20,20,11,10,10,10,
+			 10,10,10,10,10,10,10,10,10,11,19,19,19,22,19,19,19,19,19,19,19,19,19,11,10,10,10,
+			 10,10,10,10,10,10,10,10,10,11,19,19,19,22,19,19,19,19,19,19,19,19,19,11,10,10,10,
+			 10,10,10,10,10,10,10,10,10,11,19,19,19,22,19,19,19,19,19,19,19,19,19,11,10,10,10,
+			 10,10,10,10,10,10,10,10,10,11,19,19,19,13,12,12,12,12,12,12,12,12,12,16,10,10,10,
+			 10,10,10,10,10,10,10,10,10,11,19,19,19,11,10,10,10,10,10,10,10,10,10,10,10,10,10,
+			 10,10,10,10,10,10,10,10,10,11,21,21,21,14,12,12,12,12,12,12,12,12,12,15,10,10,10,
+			 10,10,10,10,10,10,10,10,10,11,19,19,19,19,19,19,19,19,22,19,19,19,19,11,10,10,10,
+			 10,10,10,10,10,10,10,10,10,11,19,19,19,19,19,19,19,19,22,19,19,19,19,11,10,10,10,
+			 10,10,10,10,10,10,10,10,10,11,19,19,19,19,19,19,19,19,22,19,19,19,19,11,10,10,10,
+			 10,10,10,10,10,10,10,10,10,14,12,12,12,12,12,12,12,12,12,15,19,19,19,11,10,10,10};
 		
 //			string path = "Application/levels/level" + lv.ToString() + ".txt";
 //		            using (System.IO.FileStream hStream = System.IO.File.OpenRead(@path))
@@ -181,7 +241,7 @@ namespace TowerDefense
 //						{
 //		                    long size = hStream.Length;
 //			                byte[] buffer = new byte[size];
-//			                hStream.Read(buffer, 0, (int)size);
+//			                hStream.Read(buffer, 10, (int)size);
 //							int x = sizeof(Int32);
 //					//17*27 =459
 //							mapData = new int[459];

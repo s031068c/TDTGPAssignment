@@ -19,6 +19,7 @@ namespace TowerDefense
 		private SpriteUV 				tileSp;
 		private TextureInfo				tileSpTex;
 		private Turret					tr;
+		private Waypoint				way;
 		private int 					spaceType;
 		
 		public Space (Scene scene, Vector2 pos, int spT)
@@ -71,10 +72,21 @@ namespace TowerDefense
 			
 		}
 		
-		//0 = Empty/turret space, 1-8 = Wall, 9 = ground
+		//0 = Empty/turret space, 1-8 = Wall, 9 = ground, 10-13 waypoints
 		public int getType()
 		{
 			return spaceType;
+		}
+		
+		public int getWayDir()
+		{
+			if(way != null)
+			{
+				return way.getDir();
+			} else 
+			{
+				return -1;
+			}
 		}
 		
 		public void unSelect()
@@ -104,51 +116,99 @@ namespace TowerDefense
 			return (int)selectSp.TextureInfo.Texture.Height;
 		}
 		
+		public int getWX()
+		{
+			return (int)way.getPos().X;
+		}
+		
+		public int getWY()
+		{
+			return (int)way.getPos().Y;
+		}
+		
+		public int getWWidth()
+		{
+			return way.getWidth();
+		}
+		
+		public int getWHeight()
+		{
+			return way.getHeight();
+		}
 		
 		
 		
 		private void setTile()
 		{
-			if(spaceType == 0)
+			if(spaceType == 10)
 			{
 				tileSpTex = new TextureInfo("Application/graphics/Empty.png");
 				tileSp = new SpriteUV(tileSpTex);
-			}else if (spaceType == 1)
+			}else if (spaceType == 11)
 			{
 				tileSpTex = new TextureInfo("Application/graphics/VertWall.png");
 				tileSp = new SpriteUV(tileSpTex);
 				
-			}else if (spaceType == 2)
+			}else if (spaceType == 12)
 			{
 				tileSpTex = new TextureInfo("Application/graphics/HozWall.png");
 				tileSp = new SpriteUV(tileSpTex);
 				
-			}else if (spaceType == 3)
+			}else if (spaceType == 13)
 			{
 				tileSpTex = new TextureInfo("Application/graphics/RCorner.png");
 				tileSp = new SpriteUV(tileSpTex);
 				
-			}else if (spaceType == 4)
+			}else if (spaceType == 14)
 			{
 				tileSpTex = new TextureInfo("Application/graphics/Lcorner.png");
 				tileSp = new SpriteUV(tileSpTex);
 				
-			}else if (spaceType == 5)
+			}else if (spaceType == 15)
 			{
 				tileSpTex = new TextureInfo("Application/graphics/IRCorner.png");
 				tileSp = new SpriteUV(tileSpTex);
 				
-			}else if (spaceType == 6)
+			}else if (spaceType == 16)
 			{
 				tileSpTex = new TextureInfo("Application/graphics/ILCorner.png");
 				tileSp = new SpriteUV(tileSpTex);
 				
-			}else if (spaceType == 9)
+			}else if (spaceType == 19)
 			{
 				tileSpTex = new TextureInfo("Application/graphics/Ground.png");
 				tileSp = new SpriteUV(tileSpTex);
 				
+			}else if (spaceType == 20)
+			{
+				tileSpTex = new TextureInfo("Application/graphics/Ground.png");
+				tileSp = new SpriteUV(tileSpTex);
+				way = new Waypoint(0, selectSp.Position);
+				
+			}else if (spaceType == 21)
+			{
+				tileSpTex = new TextureInfo("Application/graphics/Ground.png");
+				tileSp = new SpriteUV(tileSpTex);
+				way = new Waypoint(1, selectSp.Position);
+				
+			}else if (spaceType == 22)
+			{
+				tileSpTex = new TextureInfo("Application/graphics/Ground.png");
+				tileSp = new SpriteUV(tileSpTex);
+				way = new Waypoint(2, selectSp.Position);
+				
+			}else if (spaceType == 23)
+			{
+				tileSpTex = new TextureInfo("Application/graphics/Ground.png");
+				tileSp = new SpriteUV(tileSpTex);
+				way = new Waypoint(3, selectSp.Position);
 			}
+		}
+		
+		private void Dispose()
+		{
+			selectSpTex.Dispose();
+			tileSpTex.Dispose();
 		}
 		
 	}
