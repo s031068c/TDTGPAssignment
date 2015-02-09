@@ -18,6 +18,7 @@ namespace TowerDefense
 		private SpriteUV 				sprite;
 		private TextureInfo				spriteTex;
 		private Vector2 				pos;
+		private Vector2 				turnPos;
 		private int 					dir, newDir, gold, health, colTimer, colTimerMax;
 		private float					speed;
 		private bool					turning;
@@ -29,11 +30,11 @@ namespace TowerDefense
 			sprite = new SpriteUV(spriteTex);
 			sprite.Position = p;
 			sprite.Quad.S 	= spriteTex.TextureSizef;
-			health = 100;
-			speed = 0.5f;
+			health = 10;
+			speed = 1.0f;
 			dir = d;
 			gold = 50;
-			colTimerMax = rand.Next(180, 300);
+			colTimerMax = rand.Next(32, 64);
 			colTimer = colTimerMax;
 			turning = false;
 			scene.AddChild(sprite);
@@ -64,22 +65,45 @@ namespace TowerDefense
 			}
 			if(turning)
 			{
-				colTimer --;
-				if(colTimer <= 0)
-				{
-					colTimer = colTimerMax;
-					turning = false;
-					dir = newDir;
-				}
+				checkTurn ();
 			}
 			
 			sprite.Position = new Vector2(pos.X, pos.Y);
 			
 		}
 		
+		private void checkTurn()
+		{
+			if(dir == 0)
+			{
+				if(pos.X <= turnPos.X - colTimerMax)
+				{
+					dir = newDir;
+					turning = false;
+				}
+			} else if (dir == 1)
+			{
+				if(pos.X >= turnPos.X + colTimerMax)
+				{
+					dir = newDir;
+					turning = false;
+				}
+			}else if (dir == 2)
+			{
+				if(pos.Y <= turnPos.Y - colTimerMax)
+				{
+					dir = newDir;
+					turning = false;
+				}
+				
+			}
+		}
+		
 		public void randDelay(Random rand)
 		{
-			colTimerMax = rand.Next (180, 300);
+			colTimerMax = rand.Next (32, 64);
+			turnPos = pos;
+			
 		}
 
 		
@@ -107,6 +131,14 @@ namespace TowerDefense
 		public int getWidth()
 		{
 			return sprite.TextureInfo.Texture.Height;
+		}
+		
+		public Vector2 GetCenter()
+		{
+			Vector2 ret;
+			ret.X = pos.X + getWidth()*0.5f;
+			ret.Y = pos.Y + getHeight()*0.5f;
+			return ret;
 		}
 		
 		public void Dispose()

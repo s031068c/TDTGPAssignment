@@ -71,5 +71,7 @@
     <Content Include="graphics\LCorner.png" />
     <Content Include="graphics\RCorner.png" />
     <Content Include="graphics\VertWall.png" />
+    <Content Include="graphics\TURRET.png" />
+    <Content Include="graphics\BULLET.png" />
   </ItemGroup>
 </Project>

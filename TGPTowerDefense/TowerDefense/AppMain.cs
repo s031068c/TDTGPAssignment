@@ -37,7 +37,9 @@ namespace TowerDefense
 		private static int												screenH, screenW;
 		private static int[]											mapData;
 		private static List<Space>										grid;
+		private static List<Bullet>										bullets;
 		private static Random											rand;
+		private static Turret											turr;
 		
 		public static void Main (string[] args)
 		{
@@ -88,6 +90,7 @@ namespace TowerDefense
 			
 			Vector2 ePos = new Vector2(0.0f, 0.0f);
 			grid = new List<Space>();
+			bullets = new List<Bullet>();
 			int typeCount = 0;
 			bool enemySpawn = false;
 			
@@ -115,7 +118,9 @@ namespace TowerDefense
 			rand = new Random();
 			
 			en = new Enemy(gameScene, ePos, 2, rand);
-
+			ePos.X -= 70.0f;
+			ePos.Y -= 90.0f;
+			turr = new Turret(gameScene, ePos);
 			uiScene.RootWidget.AddChildLast(panel);
 			
 			UISystem.SetScene(uiScene);
@@ -127,13 +132,41 @@ namespace TowerDefense
 
 		public static void Update ()
 		{
+			
+
+			en.Update(0);
+			turr.RotateToEnemy(en.GetCenter());
+			turr.Update (0);
+			if(turr.fireCheck() == true)
+			{
+				Bullet bu = new Bullet(gameScene, turr.getPos(), turr.getDirection());
+				bullets.Add (bu);
+			}
+			BulletUpdate ();
+			GridUpdate();
+			
+			
+		}
+		
+		public static void BulletUpdate()
+		{
+			foreach(Bullet b in bullets)
+			{
+				b.Update ();
+				Vector2 bPos = b.getPos ();
+//				if(bPos.X > screenW || bPos.X < 0 || bPos.Y > screenH || bPos.Y < 0)
+//				{
+//					b.Dispose ();
+//				}
+			}
+		}
+		
+		
+		public static void GridUpdate()
+		{
 			var touchT = Touch.GetData(0).ToArray();
 			int touchX = -100;
 			int touchY = -100;
-
-			en.Update(0);
-			
-			
 			if(touchT.Length > 0 && touchT[0].Status == TouchStatus.Up)
 			{
 				touchX = (int)((touchT[0].X + 0.5f) * screenW);
@@ -188,8 +221,18 @@ namespace TowerDefense
 				}
 				
 			}
-			
 		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		
 		

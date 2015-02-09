@@ -7,6 +7,7 @@ using Sce.PlayStation.Core.Environment;
 using Sce.PlayStation.Core.Graphics;
 using Sce.PlayStation.Core.Input;
 
+
 using Sce.PlayStation.HighLevel.GameEngine2D;
 using Sce.PlayStation.HighLevel.GameEngine2D.Base;
 
@@ -19,17 +20,29 @@ namespace TowerDefense
 		private SpriteUV 				sprite;
 		private TextureInfo				spriteTex;
 		private turretStats				stats;
-		private int						level;
-		private int						spentGold;
-		
+		private int						level, spentGold;
+		private Vector2					position, direction;
+		private int 					width, height;
+		private float 					fireTimer;
+		private bool 					canFire;
+
+
 		
 		public Turret (Scene scene, Vector2 pos)
 		{
-			spriteTex = new TextureInfo("Application/graphics/FOE.png");
+			spriteTex = new TextureInfo("Application/graphics/TURRET.png");
 			sprite = new SpriteUV(spriteTex);
+			
+			
+			
 			stats = new turretStats();
+			setStats (0);
 			sprite.Position = pos;
+			position = pos;
+			level = 0;
 			sprite.Quad.S 	= spriteTex.TextureSizef;
+			width = sprite.TextureInfo.Texture.Width;
+			height = sprite.TextureInfo.Texture.Height;
 
 			scene.AddChild(sprite);
 		}
@@ -37,7 +50,15 @@ namespace TowerDefense
 		
 		public void Update(float t)
 		{
-			
+			if(!canFire)
+			{
+				fireTimer += 0.2f;
+				
+				if(fireTimer > stats.fireRate)
+				{
+					canFire = true;
+				}
+			}
 		}
 		
 		public turretStats getStats()
@@ -50,17 +71,64 @@ namespace TowerDefense
 			if(level == 0)
 			{
 				stats.damage = 10;
-				stats.fireRate = 50;
+				stats.fireRate = 15;
+				level = 0;
 			}
+		}
+		
+		public bool fireCheck()
+		{
+			if(canFire)
+			{
+				canFire = false;
+				fireTimer = 0;
+				return true;
+			} else {
+				return false;
+			}
+		}
+		
+		public bool RotateToEnemy(Vector2 enemyPos)
+		{
+			//Set sprite centre for rotation to its center
+			sprite.CenterSprite(TRS.Local.Center);
+			
+			direction = GetCenter() - enemyPos;
+			
+
+			
+			sprite.RotationNormalize = direction;
+
+			return true;
+			
+		}
+		
+		public Vector2 getDirection()
+		{
+			return direction.Normalize();
 		}
 		
 		public int getLevel()
 		{
-			return 0;
+			return level;
+		}
+		
+		public Vector2 getPos()
+		{
+			return position;
+		}
+		
+		private Vector2 GetCenter()
+		{
+			Vector2 ret;
+			ret.X = position.X+(width*0.5f);
+			ret.Y = position.Y+(height*0.5f);
+			return ret;
 		}
 		
 		
 		
+
 		
 		
 	}
